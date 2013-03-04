@@ -206,9 +206,10 @@ void mig_threadFunction(int *i)
 			printf("\n");
 		}
 		
-		int migration_method = 1;
+		//Migration
+		int migration_method = 2;
 
-		//Migration 1
+		//Migration 1: migrate the best one
 		if(p%2==0 && 1==migration_method) {
 			
     			pthread_barrier_wait(&barrier);
@@ -235,30 +236,28 @@ void mig_threadFunction(int *i)
     			pthread_barrier_wait(&barrier);
 		}
 
-		//Migration 2
-		if(p%2==0 && 1==migration_method) {
-			
+		//Migration 2: migrate the best ones by rotation. 1->2, 2->3, 3->4, 4->1.
+		double migration_rate = 0.9;
+		if(p%1==0 && 2==migration_method) {
     			pthread_barrier_wait(&barrier);
-			//let thread zero handle the migration
-			if(index == 0) {
-				int thread_of_best = 0;
-				for(int i=0; i<param->number_of_thread; i++) {
-					if(param->best[i] > param->best[thread_of_best]){
-						thread_of_best = i;
-					}				
-				}
+			int target = (index+1) % param->number_of_thread;
 
-				for(int i=0; i<param->number_of_thread; i++){
-					if(param->best[thread_of_best] > param->worst[i]){
-						int thread_worst_ch_index = param->worst_index[i];
-						int thread_best_ch_index = param->best_index[thread_of_best];
-						for(int j=0;j<dimw;j++) {
-								param->ch[thread_worst_ch_index].items[j] = param->ch[thread_best_ch_index].items[j];
-						}	
-						param->ch[thread_worst_ch_index].f = param->ch[thread_best_ch_index].f;	
-					}				
+			int target_end = (target+1)*size - 1;
+			int target_begin =  target_end - (int)(migration_rate*size);
+			
+			int k=begin;
+			for(int i=target_begin; i<target_end; i++){
+				if(param->ch[k].f > param->ch[i].f)
+				{
+					for(int j=0;j<dimw;j++) {
+						param->ch[i].items[j] = param->ch[k].items[j];		
+					}
+
+					param->ch[i].f = param->ch[k].f;
 				}
+				k++;	
 			}
+			
     			pthread_barrier_wait(&barrier);
 		}
 	}
