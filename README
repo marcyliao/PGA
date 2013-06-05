@@ -1,5 +1,5 @@
 Parallel Genetic Algorithm
-==================================================================
+==========================
 
 The Genetic Algorithm (GA) [1] is a search heuristic utilized to generate useful 
 solutions of optimization and search problems. However, as the performance 
