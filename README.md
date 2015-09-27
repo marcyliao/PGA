@@ -14,3 +14,7 @@ shows advantages of the both. We used the 0-1 Knapsack problem as the
 experimental problem and a benchmark with 10000 packages to test our parallel 
 algorithm. Results demonstrated the best speedup using the Hybrid Method when 
 running the implementation on a four-core machine.
+
+Check the paper for details
+
+https://github.com/marcyliao/PGA/blob/master/Using%20Parallel%20Genetic%20Algorithm%20to%20solve%200-1%20Knapsack%20Problem%20with%20Pthreads.pdf
